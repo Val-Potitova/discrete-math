@@ -1,142 +1,52 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using static System.Console;
 
-namespace Discrete
+namespace Булеан
 {
     internal class Program
     {
-        public static int[] Enter(int[] o, int x)
+        public static int[] a = new int[100];
+        public static int[] Enter(int x, int[] b)
         {
-            WriteLine("Enter value of sets:");
-            for (int c = 0; c < x; c++)
+            for (int i = 1; i <= x; i++)
             {
-                Write("Enter value for element[{0}] : ", c);
-                o[c] = int.Parse(ReadLine());
+                Write("Enter element b[{0}] = ", i);
+                b[i] = int.Parse(ReadLine());
             }
-            return o;
+            return b;
         }
-        public static void homework01(int[] o, int[] a, char t)
+        public static void Out(int k, int[] b)
         {
-            int k = 0;
-            List<int> mylist = new List<int>();
-            if (t == 'u')
+            for (int i = 1; i <= k; i++)
             {
-                for (int d = 0; d < a.Length; d++)
-                {
-                    mylist.Add(a[d]);
-                    k += 1;
-                }
-                for (int c = 0; c < o.Length; c++)
-                {
-
-                    int x = 0;
-                    for (int d = 0; d < a.Length; d++)
-                    {
-                        if (a[d] != o[c])
-                        {
-                            x += 1;
-                        }
-                        if (x == a.Length)
-                        {
-                            mylist.Add(o[c]);
-                            k += 1;
-                        }
-                    }
-                    x = 0;
-                }
-
+                Write(b[a[i]]);
             }
-            if (t == 'i')
+            WriteLine();
+        }
+        public static void Boolean(int i, int x, int k, int[] b)
+        {
+            for (int j = a[i - 1] + 1; j <= x; j++)
             {
-                for (int c = 0; c < o.Length; c++)
-                {
-
-                    int x = 0;
-                    for (int d = 0; d < a.Length; d++)
-                    {
-                        if (a[d] == o[c])
-                        {
-                            x += 1;
-                        }
-                        if (x > 0)
-                        {
-                            mylist.Add(o[c]);
-                            k += 1;
-                        }
-                    }
-                    x = 0;
-                }
+                a[i] = j;
+                if (i == k) Out(k, b);
+                else Boolean(i + 1, x, k, b);
             }
-            if (t == 's')
-            {
-                for (int c = 0; c < o.Length; c++)
-                {
-
-                    int x = 0;
-                    for (int d = 0; d < a.Length; d++)
-                    {
-                        if (a[d] != o[c])
-                        {
-                            x += 1;
-                        }
-                        if (x == a.Length)
-                        {
-                            mylist.Add(o[c]);
-                            k += 1;
-                        }
-                    }
-                    x = 0;
-                }
-            }
-            if (t == 'a')
-            {
-                for (int d = 0; d < a.Length; d++)
-                {
-
-                    int x = 0;
-                    for (int c = 0; c < o.Length; c++)
-                    {
-                        if (a[d] != o[c])
-                        {
-                            x += 1;
-                        }
-                        if (x == o.Length)
-                        {
-                            mylist.Add(a[d]);
-                            k += 1;
-                        }
-                    }
-                    x = 0;
-                }
-            }
-            for (int i = k - 1; i >= 0; i--)
-            {
-                for (int j = 1; j <= i; j++)
-                    if (mylist[j - 1] > mylist[j])
-                    {
-                        int temp = mylist[j];
-                        mylist[j] = mylist[j - 1];
-                        mylist[j - 1] = temp;
-                    }
-            }
-            foreach (int i in mylist)
-            {
-                Write(i + " ");
-            }
+            
         }
         static void Main(string[] args)
         {
-            int a = int.Parse(ReadLine());
-            int b = int.Parse(ReadLine());
-            int[] x = new int[a];
-            int[] y = new int[b];
-            Enter(x, a);
-            Enter(y, b);
-            char t = char.Parse(ReadLine());
-            homework01(x, y, t);
+            Write("Enter the size of asemble: ");
+            int x = int.Parse(ReadLine());
+            int[] b = new int[x+1];
+            b = Enter(x, b);
+            a[0] = 0;
 
+            WriteLine("[]");
+
+            for(int k=1; k<=x; k++)
+            {
+                Boolean(1, x, k, b);
+            }
         }
     }
 }
