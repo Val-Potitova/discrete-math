@@ -18,9 +18,12 @@ def transitiv(para_rib):
         second_element.append(b)
         for (a, b) in para_rib:
             for c in second_element:
-                if (b, c) in para_rib and (a, c) not in para_rib:
+                if (a == b) and (b == c):
+                    return "транзитивно"
+                elif (b, c) in para_rib and (a, c) in para_rib:
+                    return "транзитивно"
+                else:
                     return "антитранзитивно"
-        return "транзитивно"
 
 def reflex(para_rib):
     ref_ver = []
