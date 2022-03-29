@@ -22,11 +22,11 @@ def IsReflexive(links: list):
         if links[i][i]:
             count += 1
     if count == len(links):
-        print("Рефлексивный")
+        print("Рефлексивный - абсолютно для всех элементов")
     elif count > 0:
-        print("Нерефлексивный")
+        print("Нерефлексивный - не для всех элементов")
     else:
-        print("Антирефлексивный")
+        print("Антирефлексивный - вообще ни для каких элементов")
     pass
 
 
@@ -38,17 +38,17 @@ def IsTransitive(links):
         for j in range(l):
             if links[i][j] and i != j:
                 for k in range(l):
-                    if k != i and links[i][k]:
+                    if k != i and links[i][k] and links[j][k]:
                         true += 1
                     else:
                         false += 1
     if false == l:
-        print("Антитранзитивный")
+        print("Антитранзитивный - вообще ни для каких элементов")
         return 0
     elif true == l:
-        print("Транзитивный")
+        print("Транзитивный - абсолютно для всех элементов")
     else:
-        print("Нетранзитивный")
+        print("Нетранзитивный - не для всех элементов")
 
 
 def IsSymmetric(links):
@@ -59,8 +59,8 @@ def IsSymmetric(links):
             if i != j and links[i][j] and links[j][i]:
                 count += 1
     if count == l:
-        print("Симметричный")
+        print("Симметричный - абсолютно для всех элементов")
     elif count == 0:
-        print("Антисимметричный")
+        print("Антисимметричный - вообще ни для каких элементов")
     else:
-        print("Несимметричный")
+        print("Несимметричный - не для всех элементов")
