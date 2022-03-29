@@ -18,9 +18,9 @@ def transitiv(para_rib):
         second_element.append(b)
         for (a, b) in para_rib:
             for c in second_element:
-                if (a == b) and (b == c):
+                if (b, c) in para_rib and (a, c) in para_rib:
                     return "транзитивно"
-                elif (b, c) in para_rib and (a, c) in para_rib:
+                elif (a == b) and (b == c):
                     return "транзитивно"
                 else:
                     return "антитранзитивно"
