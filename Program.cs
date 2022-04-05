@@ -1,107 +1,156 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Collections;
 using static System.Console;
 
-
-namespace Binaryrelation
+namespace Huffman
 {
     internal class Program
     {
-        private static bool IsIn(int[][] b, int x, int y)
+        static void Main()
         {
-            for (int i = 0; i < b.Length; i++)
-            {
-                if (b[i][0] == x && b[i][1] == y)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-        public static string transitivily(int[][] b, int y)
-        {
-            int[] s = new int[y];
-            for (int i = 0; i < y; i++)
-            {
-                s[i] = b[i][1];
-            }
-            int[] c = new int[y];
+            Console.WriteLine("Please enter the string:");
+            string input = Console.ReadLine();
+            HuffmanTree huffmanTree = new HuffmanTree();
 
-            for (int i = 0; i < y; i++)
-            {
-                c[i] = b[i][0];
-            }
-            for (int i = 0; i < y; i++)
-            {
-                if (!IsIn(b, s[i], s[i]) || !IsIn(b, c[i], c[i]))
-                {
+            // Build the Huffman tree
+            huffmanTree.Build(input);
 
-                    return "not transitibily";
-                }
-            }
-            return "transitivily";
+            // Encode
+            Dictionary<char, string> encoded = huffmanTree.Encode(input);
 
+            
+            foreach (KeyValuePair<char, string> bit in encoded)
+            {
+                WriteLine("{0} {1}", bit.Key, bit.Value);
+                
+            }
+            Console.WriteLine();
         }
-        public static string symmetry(int[][] b, int y)
+    }
+    public class Node
+    {
+        public char Symbol { get; set; }
+        public int Frequency { get; set; }
+        public Node Right { get; set; }
+        public Node Left { get; set; }
+        public List<bool> Traverse(char symbol, List<bool> data)
         {
-            int[] s = new int[y];
-            for (int i = 0; i < y; i++)
+            // Leaf
+            if (Right == null && Left == null)
             {
-                s[i] = b[i][1];
-            }
-            int[] c = new int[y];
-            for (int i = 0; i < y; i++)
-            {
-                c[i] = b[i][0];
-            }
-            for (int i = 0; i < y; i++)
-            {
-                if (!IsIn(b, s[i], c[i]))
+                if (symbol.Equals(this.Symbol))
                 {
-                    return "not symmetry";
+                    return data;
                 }
-            }
-            return "symmetry";
-        }
-        public static string reflexivity(int[][] b, int y)
-        {
-            int[] c = new int[y];
-            for (int i = 0; i < y; i++)
-            {
-                c[i] = b[i][0];
-            }
-            for (int i = 0; i < y; i++)
-            {
-                if (!IsIn(b, c[i], c[i]))
+                else
                 {
-                    return "not reflexivity";
+                    return null;
                 }
-            }
-            return "reflexivity";
-        }
-
-        static void Main(string[] args)
-        {
-            string[] x_y = ReadLine().Split(new[] { ' ' }); // nhập dãy số vào mảng, nhập string được chia cắt 
-            int x = int.Parse(x_y[0]);                      // вершин
-            int y = int.Parse(x_y[1]);
-            if (y <= Math.Pow(2, x))
-            {
-                int[][] b = new int[y][];             // b[][] = [[1,2], [3,4], ....] : ребер
-                for (int i = 0; i < y; i++)
-                {
-                    x_y = null;
-                    x_y = ReadLine().Split(new[] { ' ' });
-                    b[i] = new int[] { int.Parse(x_y[0]), int.Parse(x_y[1]) };
-                }
-                //WriteLine(b[2][0]);
-                WriteLine(transitivily(b, y));
-                WriteLine(symmetry(b, y));
-                WriteLine(reflexivity(b, y));
             }
             else
             {
-                WriteLine("ERROR!!");
+                List<bool> left = null;
+                List<bool> right = null;
+
+                if (Left != null)
+                {
+                    List<bool> leftPath = new List<bool>();
+                    leftPath.AddRange(data);
+                    leftPath.Add(false);
+                    left = Left.Traverse(symbol, leftPath);
+                }
+
+                if (Right != null)
+                {
+                    List<bool> rightPath = new List<bool>();
+                    rightPath.AddRange(data);
+                    rightPath.Add(true);
+                    right = Right.Traverse(symbol, rightPath);
+                }
+                if (left != null)
+                {
+                    return left;
+                }
+                else
+                {
+                    return right;
+                }
             }
+        }
+    }
+
+    public class HuffmanTree
+    {
+        private List<Node> nodes = new List<Node>();
+        public Node Root { get; set; }
+        public Dictionary<char, int> Frequencies = new Dictionary<char, int>();
+        public void Build(string source)
+        {
+            for (int i = 0; i < source.Length; i++)
+            {
+                if (!Frequencies.ContainsKey(source[i]))
+                {
+                    Frequencies.Add(source[i], 0);
+                }
+
+                Frequencies[source[i]]++;
+            }
+
+            foreach (KeyValuePair<char, int> symbol in Frequencies)
+            {
+                nodes.Add(new Node() { Symbol = symbol.Key, Frequency = symbol.Value });
+            }
+
+            while(nodes.Count > 1)
+            {
+                List<Node> orderedNodes = nodes.OrderBy(node => node.Frequency).ToList<Node>();
+                if(orderedNodes.Count >= 2)
+                {
+                    // Take fisrt two items
+                    List<Node> taken = orderedNodes.Take(2).ToList<Node>();
+
+                    // Create a parent node by combining the frequencies
+                    Node parent = new Node()
+                    {
+                        Symbol = '*',
+                        Frequency = taken[0].Frequency + taken[1].Frequency,
+                        Left = taken[0],
+                        Right = taken[1]
+                    };
+
+                    nodes.Remove(taken[0]);
+                    nodes.Remove(taken[1]);
+                    nodes.Add(parent);
+                }
+                this.Root = nodes.FirstOrDefault();
+            }
+        }
+
+        public Dictionary<char, string> Encode(string source)
+        {
+            
+            Dictionary<char, string> bits = new Dictionary<char, string>();
+
+            for (int i = 0; i < source.Length; i++)
+            {
+                if (!bits.ContainsKey(source[i]))
+                {
+                    List<bool> encodedSymbol = this.Root.Traverse(source[i], new List<bool>());
+                    string t = string.Empty;
+                    BitArray bit = new BitArray(encodedSymbol.ToArray());
+                    foreach (bool b in bit)
+                    {
+                        int k = (b ? 1 : 0);
+                        t += k.ToString();
+                    }
+                    bits.Add(source[i], t);
+                }
+                
+            }
+            return bits;
         }
     }
 }
