@@ -1,7 +1,7 @@
 from Task2 import *
 from Task1 import *
 from Task3 import *
-
+from Task4 import *
 def SetRun():
     array_A = set(input("Введите через пробел элементы множества 1: ").split(" "))
 
@@ -30,5 +30,6 @@ def SetRun():
         print(boolean(array_A))
 
 if __name__ == "__main__":
-    #SetRun()
-    Graph()
+    #SetRun() #множества
+    #Graph()  #свойства графа
+    #encode_string()    #кодирование строки
